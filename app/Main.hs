@@ -5,5 +5,5 @@ import Data.Maybe
 
 main :: IO ()
 main =
-    let tree = insert (insert (Node { i = 18, left = Nothing, right = Nothing }) (Node { i = 36, left = Nothing, right = Nothing })) (Node { i = 30, left = Nothing, right = Nothing }) in do
-        print tree
+    let tree = insert (insert (insert (insert (node 18) (node 36)) (node 30)) (node 1)) (node 1000) in do
+        inOrder tree

@@ -20,3 +20,12 @@ insert root node =
         else Node { i = i root, left = left root, right = Just (insert (fromJust $ right root) node) }
 
 -- in-order traversal: interact with parent in the middle of children
+inOrder :: Node -> IO ()
+inOrder Node { i = i, left = Nothing, right = Nothing } = print i
+inOrder node = do
+    if isJust $ left node then inOrder $ (fromJust (left node)) else return ()
+    print (i node)
+    if isJust $ right node then inOrder $ (fromJust (right node)) else return ()
+
+node :: Int -> Node
+node i = Node { i = i, left = Nothing, right = Nothing }
