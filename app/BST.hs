@@ -17,6 +17,9 @@ insert root node
   | isNothing (right root) = Node { i = i root, left = left root, right = Just node }
   | otherwise = Node { i = i root, left = left root, right = Just (insert (fromJust $ right root) node) }
 
+insertAll :: Ord t => Node t -> [Node t] -> Node t
+insertAll = foldl insert -- haskell is literally so cool
+
 -- Returns (parent, child)
 search :: Ord t => Node t -> Node t -> Maybe (Node t, Node t)
 search root node
@@ -31,6 +34,7 @@ search root node
     -- Copy that node's data to the node to be removed, then remove that node all the way on the right.
 -- if node to remove < root: go left
 -- if node to remove > root: go right
+-- this will only return Nothing if the node to be removed is the root and there is nothing else in the tree
 remove :: Ord t => Node t -> Node t -> Maybe (Node t)
 remove root node
   | i node < i root = if isJust (left root) then Just Node { i = i root, left = remove (fromJust $ left root) node, right = right root } else Just root
@@ -49,13 +53,29 @@ removeReturnFarRight root
   | isNothing (right root) = (Nothing, i root)
   | otherwise = (Just Node { i = i root, left = left root, right = fst $ removeReturnFarRight (fromJust $ right root) }, snd $ removeReturnFarRight (fromJust $ right root))
 
--- in-order traversal: interact with parent in the middle of children
+-- pre-order traversal: interact with parent before children
+preOrder :: Node t -> [t]
+preOrder Node { i = i, left = Nothing, right = Nothing } = [i]
+preOrder node =
+    [i node] ++
+    (if isJust $ left node then inOrder $ fromJust (left node) else []) ++
+    (if isJust $ right node then inOrder $ fromJust (right node) else [])
+
+-- in-order traversal: interact with parent in the middle of children. this sorts a BST!
 inOrder :: Node t -> [t]
 inOrder Node { i = i, left = Nothing, right = Nothing } = [i]
 inOrder node =
     (if isJust $ left node then inOrder $ fromJust (left node) else []) ++
     [i node] ++
     (if isJust $ right node then inOrder $ fromJust (right node) else [])
+
+-- post-order traversal: interact with parent after children
+postOrder :: Node t -> [t]
+postOrder Node { i = i, left = Nothing, right = Nothing } = [i]
+postOrder node =
+    (if isJust $ left node then inOrder $ fromJust (left node) else []) ++
+    (if isJust $ right node then inOrder $ fromJust (right node) else []) ++
+    [i node]
 
 node :: i -> Node i
 node i = Node { i = i, left = Nothing, right = Nothing }
