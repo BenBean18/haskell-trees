@@ -5,5 +5,5 @@ import Data.Maybe
 
 main :: IO ()
 main =
-    let tree = insert (insert (insert (insert (node 18) (node 36)) (node 30)) (node 1)) (node 1000) in 
+    let tree = fromJust $ remove (insert (insert (insert (insert (node 1) (node 0)) (node 5)) (node 3)) (node 8)) (node 1) in 
         print $ inOrder tree
