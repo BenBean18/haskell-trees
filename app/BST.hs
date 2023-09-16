@@ -47,11 +47,22 @@ remove root node
     else if isJust $ left root then left root
     else right root
 
--- if there is no right node (this is the last node), return (Nothing, i root)
+removeWrapped :: Ord t => Maybe (Node t) -> Node t -> Maybe (Node t)
+removeWrapped wrappedRoot = remove (fromJust wrappedRoot)
+
+-- helper method for removal when there are two children
+-- returns (value of rightmost node, root node with rightmost node removed)
+-- if there is no right node (this is the last node), return (left child, i root)
 removeReturnFarRight :: Ord t => Node t -> (Maybe (Node t), t)
 removeReturnFarRight root
-  | isNothing (right root) = (Nothing, i root)
+  | isNothing (right root) = (left root, i root)
   | otherwise = (Just Node { i = i root, left = left root, right = fst $ removeReturnFarRight (fromJust $ right root) }, snd $ removeReturnFarRight (fromJust $ right root))
+
+removeAllWrapped :: Ord t => Maybe (Node t) -> [Node t] -> Maybe (Node t)
+removeAllWrapped = foldl removeWrapped
+
+removeAll :: Ord t => Node t -> [Node t] -> Maybe (Node t)
+removeAll root = removeAllWrapped (Just root)
 
 -- pre-order traversal: interact with parent before children
 preOrder :: Node t -> [t]
