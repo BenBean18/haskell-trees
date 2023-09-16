@@ -90,3 +90,7 @@ postOrder node =
 
 node :: i -> Node i
 node i = Node { i = i, left = Nothing, right = Nothing }
+
+tree :: (Ord t) => [t] -> Node t
+tree [] = Node { left = Nothing, right = Nothing }
+tree (head:values) = insertAll (node head) (map node values)
