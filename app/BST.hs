@@ -69,8 +69,8 @@ preOrder :: Node t -> [t]
 preOrder Node { i = i, left = Nothing, right = Nothing } = [i]
 preOrder node =
     [i node] ++
-    (if isJust $ left node then inOrder $ fromJust (left node) else []) ++
-    (if isJust $ right node then inOrder $ fromJust (right node) else [])
+    (if isJust $ left node then preOrder $ fromJust (left node) else []) ++
+    (if isJust $ right node then preOrder $ fromJust (right node) else [])
 
 -- in-order traversal: interact with parent in the middle of children. this sorts a BST!
 inOrder :: Node t -> [t]
@@ -84,8 +84,8 @@ inOrder node =
 postOrder :: Node t -> [t]
 postOrder Node { i = i, left = Nothing, right = Nothing } = [i]
 postOrder node =
-    (if isJust $ left node then inOrder $ fromJust (left node) else []) ++
-    (if isJust $ right node then inOrder $ fromJust (right node) else []) ++
+    (if isJust $ left node then postOrder $ fromJust (left node) else []) ++
+    (if isJust $ right node then postOrder $ fromJust (right node) else []) ++
     [i node]
 
 node :: i -> Node i
